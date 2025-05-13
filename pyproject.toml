@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "airpy-tool"
+version = "1.0.0"
+description = "A tool for cleaning and processing air quality data"
+readme = "README.md"
+requires-python = ">=3.6"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Chandan Kumar", email = "chandankr014@gmail.com"},
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Atmospheric Science",
+]
+dependencies = [
+    "pandas",
+    "numpy",
+    "matplotlib",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/chandankr014/airpy-tool"
+"Bug Tracker" = "https://github.com/chandankr014/airpy-tool/issues"
+
+[project.scripts]
+airpy = "airpy.cli:main"
+
+[tool.setuptools]
+package-data = {"airpy" = ["data/*.csv"]} 
