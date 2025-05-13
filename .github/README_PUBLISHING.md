@@ -1,47 +1,40 @@
 # Publishing airpy-tool to PyPI with GitHub Actions
 
-This package is set up to automatically publish to PyPI whenever a new release is created on GitHub. Here's how to use this workflow:
+This package automatically publishes to PyPI when a new release is created on GitHub. Follow these steps to use this workflow:
 
 ## Prerequisites
-
-1. Create accounts on [PyPI](https://pypi.org/) and [Test PyPI](https://test.pypi.org/)
-2. Create API tokens:
-   - Go to your account settings on PyPI → API tokens → Add API token
-   - Do the same for Test PyPI
+1. Create an account on [PyPI](https://pypi.org/).
+2. Generate an API token.
 
 ## Setting up GitHub Secrets
-
-Before you can publish, you need to add your PyPI API tokens as GitHub secrets:
-
-1. Go to your GitHub repository → Settings → Secrets and variables → Actions
-2. Add these secrets:
-   - `PYPI_API_TOKEN`: Your PyPI API token
-   - `TEST_PYPI_API_TOKEN`: Your Test PyPI API token
+Add your PyPI API token as a GitHub secret:
+1. Navigate to your GitHub repository → Settings → Secrets and variables → Actions.
+2. Add the secret:
+   - `PYPI_API_TOKEN`: Your PyPI API token.
 
 ## Publishing a New Release
+To release a new version:
+1. Update the version number in `setup.py`.
+2. Commit and push your changes to GitHub.
+3. Go to your GitHub repository → Releases → Create a new release.
+4. Create a new tag with the version (e.g., `v1.0.0`).
 
-To publish a new version:
+If you need to update the tag:
+- Delete the old tag:
+  ```
+  git tag -d v1.0.0
+  git push --delete origin v1.0.0
+  ```
+- Add the new tag:
+  ```
+  git tag v1.0.1
+  git push origin v1.0.1
+  ```
 
-1. Update the version number in `setup.py`
-2. Commit and push your changes to GitHub
-3. Go to your GitHub repository → Releases → Create a new release
-4. Create a new tag with the version (e.g., `v1.0.0`)
-5. Fill out the release title and description
-6. Publish the release
+5. Fill in the release title and description.
+6. Publish the release.
 
-The GitHub Actions workflow will automatically:
-1. Build your package
-2. Upload it to Test PyPI first
-3. Upload it to the real PyPI
+The GitHub Actions workflow will automatically build and publish your package.
 
-## Testing Your Package
-
-After publication, you can verify that your package was published correctly:
-
-```bash
-# Install from Test PyPI
-pip install --index-url https://test.pypi.org/simple/ airpy-tool
-
-# Install from PyPI (once published)
-pip install airpy-tool
-``` 
+## Testing
+- pip install airpy-tool
