@@ -20,7 +20,12 @@ To release a new version:
 - publish.yml
 
 2. Commit and push your changes to GitHub.
--  `git push origin main`
+```
+git add .
+git commit -m "released new version x.x.x"
+git tag -a v1.0.0 -m "released new version x.x.x"
+git push origin main
+```
 
 3. push the latest tag now.
 -  `git push origin v1.0.1`

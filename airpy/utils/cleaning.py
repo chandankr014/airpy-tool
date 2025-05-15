@@ -73,6 +73,7 @@ def find_local_outliers(local_df, col):
     
     # Return the "_outliers" column to unchanged dataframe
     unchanged[col + '_outliers'] = local_df[col + '_outliers']
+    print("LOG: Outliers removed")
     return unchanged
 
 
@@ -115,7 +116,7 @@ def find_repeats(local_df, col):
 
     # Create a local copy of data cleaned for consecutives in unchanged
     unchanged[col+'_consecutives'] = local_df[col+'consecutives']
-
+    print("LOG: Consecutive repeats removed")
     return unchanged
 
 
@@ -140,7 +141,7 @@ def interpolate_gaps(values, limit=None):
         for run in invalid_runs:
             if len(run) > limit:
                 filled[run] = np.nan
-    
+    print("LOG: Interpolated gaps")
     return filled
 
 
@@ -221,6 +222,7 @@ def NO_count_mismatch(df: pd.DataFrame):
         DataFrame with mismatch flag added
     """
     df['mismatch'] = np.where(((df['NOx'].notna() & df['NOx'] > 0) & (df['NO'].isna() | df['NO2'].isna())), 1, 0)
+    print("LOG: NO count mismatch completed")
     return df
 
 
@@ -324,5 +326,5 @@ def correct_unit_inconsistency(df, filename, get_input, plot=False):
     
     for equation in VALIDATE_EQUATIONS:
         df[equation] = temp[equation]
-        
+    print("LOG: Unit inconsistency corrected")
     return df 

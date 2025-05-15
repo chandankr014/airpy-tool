@@ -101,23 +101,23 @@ def process_data(city=None, live=False, raw_dir=None, clean_dir=None, pollutants
             
             # GET SITE INFORMATION FROM FILENAME
             if LIVE:
-                site_id, site_name, year, city_name = get_siteId_Name_Year_City_LIVE(file, sites)
+                site_id, site_name, year, city_name, state = get_siteId_Name_Year_City_LIVE(file, sites)
             else:
-                site_id, site_name, year, city_name = get_siteId_Name_Year_City(file, sites)
+                site_id, site_name, year, city_name, state = get_siteId_Name_Year_City(file, sites)
             
             # SKIP IF CITY FILTER IS APPLIED AND DOESN'T MATCH
             if city and city_name.lower() != city:
                 continue
             
             # GET FORMATTED DATAFRAME FROM RAW FILE
-            true_df, station_name, city_name, state = get_formatted_df(filepath, site_name, city_name, city_name)
+            true_df = get_formatted_df(filepath)
             
             # REMOVE DUPLICATE INDICES
             true_df = true_df.loc[~true_df.index.duplicated(keep='first')]
             
             # CREATE A COPY OF THE DATAFRAME
             df = true_df.copy()
-            filename = station_name + "_" + str(year) 
+            filename = site_name + "_" + str(year) 
             
             # PREPARE LOCAL DATAFRAME FOR PROCESSING
             local_df = df.copy()
@@ -135,7 +135,7 @@ def process_data(city=None, live=False, raw_dir=None, clean_dir=None, pollutants
                 else:
                     # DATA CLEANING PROCESS FOR EACH POLLUTANT
                     # STEP 1: GROUP AND PLOT DATA
-                    local_df = group_plot(local_df, pollutant, pollutant, station_name, filename, year=year)
+                    local_df = group_plot(local_df, pollutant, pollutant, site_name, filename, year=year)
                     
                     # STEP 2: CALCULATE ROLLING AVERAGE
                     local_df[pollutant + '_hourly'] = local_df.groupby("site_id")[pollutant].rolling(
@@ -148,13 +148,13 @@ def process_data(city=None, live=False, raw_dir=None, clean_dir=None, pollutants
                     # STEP 4: REMOVE TEMPORARY COLUMNS
                     local_df.drop(columns=[f"{pollutant}_hourly"], inplace=True)
                     
-                    print(f"Successfully cleaned {pollutant} for {station_name}")
+                    print(f"Successfully cleaned {pollutant} for {site_name}")
             
             # CHECK AND FIX UNIT INCONSISTENCIES FOR NITROGEN COMPOUNDS
             if df['NOx'].isnull().all() or df['NO2'].isnull().all() or df['NO'].isnull().all():
                 print("No available NOx, NO2, NO data | Not checking for unit inconsistency")
             else:
-                print(f"Finding unit inconsistencies for {station_name}")
+                print(f"Finding unit inconsistencies for {site_name}")
                 local_df = correct_unit_inconsistency(local_df, filename, mixed_unit_identification, plot=True)
             
             # ADDITIONAL DATA PROCESSING
@@ -182,7 +182,6 @@ def process_data(city=None, live=False, raw_dir=None, clean_dir=None, pollutants
             
             # ADD YEAR COLUMN
             local_df['year'] = year
-            print("LOG: DONE LOCAL DF")
             
             # SAVE PROCESSED DATA
             if not os.path.exists(save_dir):

@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="airpy-tool",
-    version="1.0.1",
+    version="1.0.2",
     packages=find_packages(),
     include_package_data=True,
     package_data={
@@ -21,7 +21,7 @@ setup(
             "airpy=airpy.cli:main",
         ],
     },
-    description="A tool for cleaning and processing air quality data",
+    description="A tool for cleaning and processing CPCB air quality data",
     long_description=long_description,
     long_description_content_type="text/markdown",
     author="Chandan Kumar",

@@ -23,7 +23,6 @@ def clean_dataframe(df: pd.DataFrame):
         else:
             col_dict[col] = col
     df.rename(columns=col_dict, inplace=True)
-    print("LOG: DATAFRAME CLEANED")
     return df
 
 
@@ -80,22 +79,19 @@ def read_df(df):
     except:
         df['PM25'] = np.nan
         print("NO PM data")
-    
+    print("LOG: Standardized column names")
     return df
 
 
-def get_formatted_df(path, station_name=None, city=None, state=None):
+def get_formatted_df(path):
     """
     Function removes null entries and formats the date column.
     
     Args:
         path: Path to the data file
-        station_name: Name of the station
-        city: City name
-        state: State name
         
     Returns:
-        Tuple of (cleaned dataframe, station_name, city, state)
+        Cleaned dataframe
     """
     if path.endswith('.csv'):
         df = pd.read_csv(path)
@@ -116,8 +112,8 @@ def get_formatted_df(path, station_name=None, city=None, state=None):
         df = clean_dataframe(df)
         df = read_df(df=df)
         df.drop(df.filter(regex="Unname"), axis=1, inplace=True)
-
-    return df, station_name, city, state
+    print("LOG: Dataframe cleaning completed")
+    return df
 
 
 def get_multiple_df_linerized(df1):

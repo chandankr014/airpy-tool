@@ -2,7 +2,46 @@
 Utilities for extracting metadata from filenames and handling site information.
 """
 import re
+import os
 import pandas as pd
+from pathlib import Path
+
+
+def get_state(city: str):
+    """
+    Get the state name for a given city from the sites_master.csv file.
+    
+    Args:
+        city (str): The name of the city (case-insensitive)
+        
+    Returns:
+        str: The state name corresponding to the city, or None if not found
+    """
+    if city == "unknown":
+        return None
+    
+    try:
+        package_dir = Path(__file__).parent.parent
+        
+        csv_path = os.path.join(package_dir, "data", "sites_master.csv")
+        if not os.path.exists(csv_path):
+            print(f"Error: File not found at {csv_path}")
+            return None
+        
+        df = pd.read_csv(csv_path)
+        city = city.lower()
+        df['city_lower'] = df['city'].str.lower()
+        
+        matching_row = df[df['city_lower'] == city]
+        if matching_row.empty:
+            print(f"No state found for city: {city}")
+            return None
+        else:
+            return matching_row.iloc[0]['stateID']
+        
+    except Exception as e:
+        print(f"Error fetching state for {city}: {str(e)}")
+        return None
 
 
 def get_siteId_Name_Year_City(file: str, sites: list):
@@ -53,8 +92,9 @@ def get_siteId_Name_Year_City(file: str, sites: list):
     else:
         city = "Unknown"  # Handle cases where site_id is not found in the sites DataFrame
 
-    print(f"SITE ID: {site_id} - SITENAME: {site_name} - YEAR: {year} - CITY: {city}")
-    return site_id, site_name, year, city
+    state = get_state(city)
+    print(f"SITE ID: {site_id} - SITENAME: {site_name} - YEAR: {year} - CITY: {city} - STATE: {state}")
+    return site_id, site_name, year, city, state
 
 
 def get_siteId_Name_Year_City_LIVE(file, sites):
@@ -83,9 +123,9 @@ def get_siteId_Name_Year_City_LIVE(file, sites):
         # Fetch city based on site_id
         city = sites[sites['site_code'] == 'site_'+site_id]['city'].values
         city = city[0].strip() if len(city) > 0 else "Unknown"
-
-        print(f"SITE ID: {site_id} - YEAR: {year} - MONTH: {month} - DAY: {day} - TIME: {time} - CITY: {city}")
-        return site_id, site_id, year, city
+        state = get_state(city)
+        print(f"SITE ID: {site_id} - YEAR: {year} - MONTH: {month} - DAY: {day} - TIME: {time} - CITY: {city} - STATE: {state}")
+        return site_id, site_id, year, city, state
 
     except Exception as e:
         print(f"Error parsing filename '{file}': {e}")
