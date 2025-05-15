@@ -19,20 +19,29 @@ from airpy.utils.metadata import get_siteId_Name_Year_City, get_siteId_Name_Year
 
 def process_data(city=None, live=False, raw_dir=None, clean_dir=None, pollutants=None):
     """
-    Process air quality data.
-    
+    Processes air quality data by reading raw data files, cleaning them, and saving the results.
+
+    This function is designed to handle air quality data for a specified city and can process either 
+    historical or live data. It requires directories for both raw input data and cleaned output data. 
+    Additionally, it allows for the specification of pollutants to be processed.
+
     Parameters:
     -----------
     city : str, optional
-        City name to process
+        The name of the city for which the air quality data should be processed. If not specified, 
+        data for all available cities will be processed.
     live : bool, default=False
-        Whether to process live data
+        A flag indicating whether to process live data. If set to True, the function will handle 
+        live data; otherwise, it will process historical data.
     raw_dir : str, optional
-        Path to raw data directory
+        The file path to the directory containing raw air quality data files. This directory must 
+        exist and contain the necessary data files for processing.
     clean_dir : str, optional
-        Path to save cleaned data
+        The file path to the directory where cleaned data will be saved. If the directory does not 
+        exist, the function will attempt to create it.
     pollutants : list, optional
-        List of pollutants to process
+        A list of pollutants to be processed. If not provided, the function will default to processing 
+        a standard set of pollutants, including 'PM25', 'PM10', 'NO', 'NO2', and 'NOx'.
     """
     # SETUP DIRECTORIES
     if raw_dir:

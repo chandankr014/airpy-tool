@@ -8,4 +8,4 @@ import sys
 from airpy.cli import main
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main()) 
