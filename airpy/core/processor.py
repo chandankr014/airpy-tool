@@ -4,7 +4,6 @@ Core data processing functionality for AirPy.
 import os 
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 import gc
 from pathlib import Path
 # import warnings
@@ -74,10 +73,12 @@ def process_data(city=None, live=False, raw_dir=None, clean_dir=None, pollutants
         print(f"Error loading sites_master.csv: {e}")
         return
         
-    files = os.listdir(data_dir)
-    
     # CONFIGURATION
+    allowed_extensions = ('.xlsx', '.csv', '.xls', '.txt')
     LIVE = live
+    
+    files = os.listdir(data_dir)
+    files = [f for f in files if f.lower().endswith(allowed_extensions)]
     
     # SET DEFAULT POLLUTANTS IF NOT SPECIFIED
     if pollutants is None:
@@ -198,7 +199,6 @@ def process_data(city=None, live=False, raw_dir=None, clean_dir=None, pollutants
                 local_df.to_excel(fn, index=False)
             
             print(f'\033[92mSaved successfully for: {site_id}_{year}\033[0m')
-            plt.close('all')
             print("----------------------------------------------------------")
             
         except Exception as e:
