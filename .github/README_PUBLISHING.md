@@ -14,27 +14,30 @@ Add your PyPI API token as a GitHub secret:
 
 ## Publishing a New Release
 To release a new version:
-1. Update the version number in `setup.py`.
+1. Update the version number in following:
+- setup.py
+- pyproject.toml
+- publish.yml
+
 2. Commit and push your changes to GitHub.
-3. Go to your GitHub repository → Releases → Create a new release.
-4. Create a new tag with the version (e.g., `v1.0.0`).
+-  `git push origin main`
 
-If you need to update the tag:
-- Delete the old tag:
-  ```
-  git tag -d v1.0.0
-  git push --delete origin v1.0.0
-  ```
-- Add the new tag:
-  ```
-  git tag v1.0.1
-  git push origin v1.0.1
-  ```
+3. push the latest tag now.
+-  `git push origin v1.0.1`
 
-5. Fill in the release title and description.
-6. Publish the release.
-
+4. This will start the github CICD Pipeline, you can check in the Github Action.
 The GitHub Actions workflow will automatically build and publish your package.
 
+# 
+Optional:
+```
+If you want delete the old tag:
+-  git tag -d v1.0.0
+-  git push --delete origin v1.0.0
+Fill in the release title and description.
+Publish the release.
+```
+
 ## Testing
-- pip install airpy-tool
+- `pip install --no-cache-dir airpy-tool`
+- Package page: `https://pypi.org/project/airpy-tool/`
