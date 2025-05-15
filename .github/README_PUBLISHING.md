@@ -24,12 +24,12 @@ To release a new version:
 git add .
 git commit -m "released new version 1.0.1"
 git tag -a v1.0.1 -m "released new version 1.0.1"
-git tag -f v1.0.0 (this will not update version), then git push -f origin v1.0.1
+git tag -f v1.0.0 (this will not update version)
 ```
 
 3. push the latest tag now.
 -  `git push origin main`
--  `git push origin v1.0.1`
+-  `git push origin v1.0.1` (-f when not updating)
 
 4. This will start the github CICD Pipeline, you can check in the Github Action.
 The GitHub Actions workflow will automatically build and publish your package.
