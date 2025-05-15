@@ -22,12 +22,13 @@ To release a new version:
 2. Commit and push your changes to GitHub.
 ```
 git add .
-git commit -m "released new version x.x.x"
-git tag -a v1.0.0 -m "released new version x.x.x"
-git push origin main
+git commit -m "released new version 1.0.1"
+git tag -a v1.0.1 -m "released new version 1.0.1"
+git tag -f v1.0.0 (this will not update version), then git push -f origin v1.0.1
 ```
 
 3. push the latest tag now.
+-  `git push origin main`
 -  `git push origin v1.0.1`
 
 4. This will start the github CICD Pipeline, you can check in the Github Action.
