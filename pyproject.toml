@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "airpy-tool"
-version = "1.0.2"
-description = "A tool for cleaning and processing air quality data"
+version = "1.0.3"
+description = "A tool for cleaning and processing CPCB air quality data"
 readme = "README.md"
 requires-python = ">=3.6"
 license = {file = "LICENSE"}
