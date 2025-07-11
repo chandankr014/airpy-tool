@@ -1,6 +1,6 @@
 # AirPy Tool
 
-A Python package for cleaning and processing air quality data.
+A Python package for cleaning and processing CPCB air quality data.
 
 ## Installation
 
@@ -91,6 +91,12 @@ The data should follow one of these filename formats:
 - `Raw_data_15Min_YEAR_site_ID_STATION_CITY_ORG_15Min.csv`
 - `site_ID_YEAR.csv`
 - Live data format: `site_IDYYYYMMDDHHMMSS.xlsx`
+
+## Accessing CPCB State and City-wise Data
+
+You can access the complete CPCB air quality dataset, organized by state and city, using the following link:
+
+[Download CPCB State and City-wise Data](https://iitbacin-my.sharepoint.com/:f:/g/personal/30006023_iitb_ac_in/EjiZ_EVBacNKknIN7jIJK3YBm8EssUld0C6kAHBcvGcUGA?e=0vsLeM)
 
 ## License
 
