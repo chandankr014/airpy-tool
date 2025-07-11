@@ -23,7 +23,8 @@ To release a new version:
 ```
 git add .
 git commit -m "released new version 1.0.1"
-git tag -a v1.0.1 -m "released new version 1.0.1"
+git tag -a v1.0.1 -m "released new version 1.0.1" 
+[OR]
 git tag -f v1.0.0 (this will not update version)
 ```
 
