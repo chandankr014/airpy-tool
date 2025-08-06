@@ -82,7 +82,7 @@ def process_data(city=None, live=False, raw_dir=None, clean_dir=None, pollutants
     
     # SET DEFAULT POLLUTANTS IF NOT SPECIFIED
     if pollutants is None:
-        pollutants = ['PM25', 'PM10', 'NO', 'NO2', 'NOx']
+        pollutants = ['PM25', 'PM10', 'NO', 'NO2', 'NOx', 'Ozone']
     
     # FILTER FILES BY CITY IF SPECIFIED
     if city:
