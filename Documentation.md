@@ -4,6 +4,17 @@
 ### Overview
 AirPy is a tool that cleans and processes air quality data from India's Central Pollution Control Board (CPCB). Raw air quality data often contains errors, inconsistencies, and unreliable measurements that need to be cleaned before analysis. This document explains the data cleaning techniques used and why they are necessary.
 
+### **Final Cleaned Columns to Use**
+After AirPy completes all cleaning processes, use these columns for analysis:
+- **PM25_clean** - PM2.5 concentrations in μg/m³
+- **PM10_clean** - PM10 concentrations in μg/m³  
+- **Ozone_clean** - Ozone concentrations in μg/m³
+- **NO_CPCB** - Nitric oxide concentrations in μg/m³ (unit-corrected)
+- **NO2_CPCB** - Nitrogen dioxide concentrations in μg/m³ (unit-corrected)
+- **NOx_CPCB** - Total nitrogen oxides concentrations in μg/m³ (unit-corrected)
+
+**All measurements are standardized to μg/m³ (micrograms per cubic meter)**
+
 ---
 
 ## Why Data Cleaning is Essential
@@ -93,23 +104,38 @@ Time    | Raw PM2.5 | Cleaned PM2.5 | Action
 ### 4. **Unit Inconsistency Correction**
 
 **What it does:**
-- Automatically detects when different stations report the same pollutant in different units
+- First applies all standard cleaning methods (outlier removal, repeat detection, etc.) to create "_clean" versions of all pollutants
+- Then specifically handles nitrogen compounds (NO, NO2, NOx) for unit consistency correction
+- Automatically detects when different stations report nitrogen compounds in different units
 - Converts all measurements to a standard unit (μg/m³)
-- Specifically handles nitrogen compounds (NO, NO2, NOx) which are often reported inconsistently
+- Creates "_CPCB" suffixed columns for unit-corrected nitrogen compounds
 
 **Why it's necessary:**
 Different monitoring stations sometimes report the same pollutant in different units. For example, some stations might report NO2 in "parts per billion" (ppb) while others use "micrograms per cubic meter" (μg/m³). Without conversion, comparing data between stations would be meaningless.
 
 **How it works:**
+This is a **two-step process**:
+
+**Step 1: General Cleaning**
+- Raw data is cleaned using outlier detection, repeat removal, and other methods
+- Results are saved with "_clean" suffix (PM25_clean, PM10_clean, Ozone_clean)
+
+**Step 2: Unit Correction (Nitrogen Compounds Only)**
 - Uses chemical equations to validate unit consistency
 - For nitrogen compounds: NO + NO2 = NOx (this relationship must hold true)
 - Tests different unit combinations to find the correct one
 - Automatically converts all measurements to the standard unit
+- Results are saved with "_CPCB" suffix (NO_CPCB, NO2_CPCB, NOx_CPCB)
 
 **Example:**
 ```
-Station A: NO2 = 25 ppb    →  Converts to: 47 μg/m³
-Station B: NO2 = 47 μg/m³  →  Keeps as: 47 μg/m³
+Step 1: Raw → Clean
+Station A: NO2_raw = 25 ppb    →  NO2_clean = 25 (outliers removed, but units not yet corrected)
+Station B: NO2_raw = 47 μg/m³  →  NO2_clean = 47 (outliers removed, but units not yet corrected)
+
+Step 2: Clean → Unit Corrected
+Station A: NO2_clean = 25      →  NO2_CPCB = 47 μg/m³ (converted from ppb)
+Station B: NO2_clean = 47      →  NO2_CPCB = 47 μg/m³ (already in correct units)
 ```
 
 ### 5. **Data Gap Interpolation**
@@ -196,9 +222,13 @@ After cleaning, the processed data includes:
 - Timestamp and location information
 
 ### Cleaned Data
-- Outlier-removed readings
-- Unit-standardized measurements
-- Gap-filled time series
+**Standard cleaned columns (with "_clean" suffix):**
+- PM25_clean, PM10_clean, Ozone_clean - All pollutants with outliers removed, repeats filtered, and gaps interpolated
+
+**Unit-corrected columns (with "_CPCB" suffix):**
+- NO_CPCB, NO2_CPCB, NOx_CPCB - Nitrogen compounds with unit standardization applied
+
+**All measurements standardized to μg/m³**
 
 ### Quality Information
 - Flags indicating data quality issues
