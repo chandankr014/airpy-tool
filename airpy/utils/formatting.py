@@ -43,34 +43,30 @@ def read_df(df):
             df[d] = pd.to_datetime(df[d], errors='coerce', format='%Y-%m-%d %H:%M:%S')
 
     # Cleans all data for null entries and replaces with np.nan
+    # Note: Missing pollutant columns are silently initialized as NaN
     try:
         df['PM10'] = pd.to_numeric(df.PM10, errors='coerce')
     except:
-        print("NO PM10 data")
         df['PM10'] = np.nan
     
     try:
         df['NO'] = pd.to_numeric(df.NO, errors='coerce')
     except:
-        print("No NO data")
         df['NO'] = np.nan
     
     try:
         df['NO2'] = pd.to_numeric(df.NO2, errors='coerce')
     except:
-        print("No NO2 data")
         df['NO2'] = np.nan
     
     try:
         df['NOx'] = pd.to_numeric(df.NOx, errors='coerce')
     except:
-        print("NO NOx data")
         df['NOx'] = np.nan
     
     try:
         df['Ozone'] = pd.to_numeric(df.Ozone, errors='coerce')
     except:
-        print("NO Ozone data")
         df['Ozone'] = np.nan
     
     try:
@@ -78,8 +74,8 @@ def read_df(df):
         df['PM25'] = pd.to_numeric(df.PM25, errors='coerce')
     except:
         df['PM25'] = np.nan
-        print("NO PM data")
-    print("LOG: Standardized column names")
+        # print("[DEBUG] NO PM data")
+    # print("[DEBUG] Standardized column names")
     return df
 
 
@@ -108,11 +104,11 @@ def get_formatted_df(path):
                       'Ozone', 'Benzene', 'Toluene', 'Eth-Benzene', 'MP-Xylene', 'RH', 'WS', 'WD', 'SR',
                       'BP', 'Xylene', 'AT']
         df['Timestamp'] = df['From Date']
-        print("Before cleaning: ", df.shape)
+        # print(f"[DEBUG] Excel file shape before cleaning: {df.shape}")
         df = clean_dataframe(df)
         df = read_df(df=df)
         df.drop(df.filter(regex="Unname"), axis=1, inplace=True)
-    print("LOG: Dataframe cleaning completed")
+    # print(f"[DEBUG] Dataframe cleaning completed. Final shape: {df.shape}")
     return df
 
 

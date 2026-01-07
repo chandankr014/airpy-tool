@@ -269,4 +269,65 @@ For questions about data cleaning methods or to report data quality issues:
 
 ---
 
+## Developer Guide
+
+### Module Structure
+
+```
+airpy/
+├── __init__.py           # Package initialization
+├── cli.py                # Command-line interface
+├── core/
+│   ├── processor.py      # Main processing logic
+│   └── file_processor.py # Filename parsing & metadata extraction
+├── utils/
+│   ├── cleaning.py       # Outlier & repeat detection
+│   ├── formatting.py     # Data formatting utilities
+│   └── metadata.py       # Legacy metadata functions
+└── data/
+    └── sites_master.csv  # Site lookup table
+```
+
+### Key Functions
+
+**`process_data()`** - Main entry point
+```python
+from airpy.core.processor import process_data
+
+# All parameters
+process_data(
+    input_path="data/raw/",      # File or directory path
+    output_path="data/clean/",   # Output location
+    city=None,                   # Filter by city name
+    live=False,                  # Live data format flag
+    pollutants=None,             # List of pollutants (default: all)
+    siteid_position=None,        # Custom [start, end] for site ID
+    verbose=False,               # Enable debug output
+    overwrite=False              # Overwrite existing files
+)
+```
+
+### Adding Custom Filename Formats
+
+Edit `airpy/core/file_processor.py`:
+
+1. Add a new detection pattern in `detect_filename_format()`
+2. Create a new parser method `parse_your_format()`
+3. Add the parser to `parser_map` in `extract_metadata()`
+
+### Debugging
+
+Enable verbose mode to see detailed processing steps:
+```bash
+airpy --input data/raw/ --output data/clean/ --verbose
+```
+
+This shows:
+- File detection and metadata extraction
+- Pollutant processing steps
+- Cleaning statistics
+- Any errors encountered
+
+---
+
 This documentation ensures that users understand not just what the data cleaning process does, but why each step is necessary for producing reliable air quality information that can be safely used for public health protection and policy decisions.

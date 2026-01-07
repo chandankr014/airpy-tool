@@ -3,7 +3,6 @@ Data cleaning and processing utilities for AirPy.
 """
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 from copy import deepcopy
 
 
@@ -73,7 +72,10 @@ def find_local_outliers(local_df, col):
     
     # Return the "_outliers" column to unchanged dataframe
     unchanged[col + '_outliers'] = local_df[col + '_outliers']
-    print("LOG: Outliers removed")
+    
+    # Count removed outliers for debugging
+    removed_count = local_df[col].notna().sum() - local_df[col + '_outliers'].notna().sum()
+    # print(f"[DEBUG] {col}: Removed {removed_count} outliers")
     return unchanged
 
 
@@ -116,7 +118,10 @@ def find_repeats(local_df, col):
 
     # Create a local copy of data cleaned for consecutives in unchanged
     unchanged[col+'_consecutives'] = local_df[col+'consecutives']
-    print("LOG: Consecutive repeats removed")
+    
+    # Count removed repeats for debugging
+    removed_count = local_df[col].notna().sum() - local_df[col + 'consecutives'].notna().sum()
+    # print(f"[DEBUG] {col}: Removed {removed_count} consecutive repeats")
     return unchanged
 
 
@@ -141,7 +146,7 @@ def interpolate_gaps(values, limit=None):
         for run in invalid_runs:
             if len(run) > limit:
                 filled[run] = np.nan
-    print("LOG: Interpolated gaps")
+    # print("[DEBUG] Interpolated gaps")
     return filled
 
 
@@ -169,11 +174,11 @@ def group_plot(local_df, col, label, station_name, filename, plot=False, year=''
     Args:
         local_df: DataFrame containing the data
         col: Pollutant column name
-        label: Label for plots
-        station_name: Name of the station
-        filename: Filename for saving plots
-        plot: Whether to generate plots
-        year: Year of the data
+        label: Label for plots (deprecated, kept for compatibility)
+        station_name: Name of the station (deprecated, kept for compatibility)
+        filename: Filename (deprecated, kept for compatibility)
+        plot: Whether to generate plots (deprecated, always False)
+        year: Year of the data (deprecated, kept for compatibility)
         
     Returns:
         Processed DataFrame
@@ -190,19 +195,6 @@ def group_plot(local_df, col, label, station_name, filename, plot=False, year=''
     
     # Find outliers
     local_df = find_local_outliers(local_df, col)
-    
-    # Generate plots if requested
-    if plot:
-        plt.figure(figsize=(12, 8))
-        plt.plot(local_df['Timestamp'], local_df[col], 'b.', alpha=0.2, label='Raw')
-        plt.plot(local_df['Timestamp'], local_df[col+'_consecutives'], 'g.', alpha=0.5, label='Cleaned Consecutive')
-        plt.plot(local_df['Timestamp'], local_df[col+'_outliers'], 'r.', alpha=0.5, label='Cleaned Outlier')
-        plt.title(f"{label} at {station_name} - {year}")
-        plt.ylabel(f"{label} (μg/m³)")
-        plt.xlabel("Time")
-        plt.legend()
-        plt.savefig(f"{filename}_{col}_cleaning.png", dpi=300, bbox_inches='tight')
-        plt.close()
     
     return local_df
 
@@ -222,7 +214,9 @@ def NO_count_mismatch(df: pd.DataFrame):
         DataFrame with mismatch flag added
     """
     df['mismatch'] = np.where(((df['NOx'].notna() & df['NOx'] > 0) & (df['NO'].isna() | df['NO2'].isna())), 1, 0)
-    print("LOG: NO count mismatch completed")
+    mismatch_count = df['mismatch'].sum()
+    if mismatch_count > 0:
+        print(f"[DEBUG] Found {mismatch_count} NO/NO2/NOx mismatches")
     return df
 
 
@@ -256,9 +250,9 @@ def correct_unit_inconsistency(df, filename, get_input, plot=False):
     
     Args:
         df: DataFrame containing the data
-        filename: Filename for saving plots
-        get_input: Flag for mixed unit identification
-        plot: Whether to generate plots
+        filename: Filename (deprecated, kept for compatibility)
+        get_input: Flag for mixed unit identification (deprecated, kept for compatibility)
+        plot: Whether to generate plots (deprecated, always False)
         
     Returns:
         DataFrame with corrected units
@@ -273,7 +267,7 @@ def correct_unit_inconsistency(df, filename, get_input, plot=False):
         error[df['NO_clean'].isna() | df['NO2_clean'].isna() | df['NOx_clean'].isna()] = np.nan
         errors[equation] = np.mean(error**2)
         temp[equation] = error
-        print(equation)
+        # print(f\"[DEBUG] Equation {equation} MSE: {errors[equation]:.4f}\")
 
     # Set thresholds for error identification
     PERCENTAGE_FACTOR = 1
@@ -326,5 +320,7 @@ def correct_unit_inconsistency(df, filename, get_input, plot=False):
     
     for equation in VALIDATE_EQUATIONS:
         df[equation] = temp[equation]
-    print("LOG: Unit inconsistency corrected")
+    
+    # Debug: show unit correction summary
+    # print(f"[DEBUG] Unit correction applied. Error distribution: {temp['error'].value_counts().to_dict()}")
     return df 

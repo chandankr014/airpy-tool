@@ -67,9 +67,6 @@ docs/_build/
 .pybuilder/
 target/
 
-# Jupyter Notebook
-.ipynb_checkpoints
-
 # IPython
 profile_default/
 ipython_config.py
@@ -111,3 +108,7 @@ data/clean/*
 # Keep .gitkeep files to maintain directory structure
 !data/raw/.gitkeep
 !data/clean/.gitkeep
+*.ipynb_checkpoints
+*.ipynb 
+site_*.csv
+test_*
